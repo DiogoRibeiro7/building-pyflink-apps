@@ -141,20 +141,21 @@ class KafkaClient:
         while True:
             data_gen = DataGenerator()
             items = data_gen.generate_items()
-            len_sky = len([item for item in items if item.__class__.__name__ == "SkyoneData"])
-            # print(len_sky)
-            # print(f"{len_sky} items from sky one and {len(items) - len_sky} from sunset")
-            logging.info(f"{len_sky} items from sky one and {len(items) - len_sky} from sunset")
+            len_sky = sum(1 for item in items if isinstance(item, SkyoneData))
+            len_sunset = sum(1 for item in items if isinstance(item, SunsetData))
+            logging.info(f"{len_sky} items from sky one and {len_sunset} from sunset")
             for item in items:
                 try:
-                    if item.__class__.__name__ == "SkyoneData":
+                    if isinstance(item, SkyoneData):
                         topic_name = "skyone"
                         key = {"ref": item.confirmation}
                         arrival_time = item.flight_arrival_time
-                    else:
+                    elif isinstance(item, SunsetData):
                         topic_name = "sunset"
                         key = {"ref": item.reference_number}
                         arrival_time = item.arrival_time
+                    else:
+                        raise TypeError(f"Unsupported data type: {type(item)}")
                     self.producer_client.send(
                         topic=topic_name,
                         key=key,
