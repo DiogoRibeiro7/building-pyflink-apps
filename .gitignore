@@ -1,2 +1,8 @@
 /.venv
 /requirment_abc.txt
+# Python build files
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+venv/
