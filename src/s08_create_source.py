@@ -42,9 +42,8 @@ if __name__ == "__main__":
         jar_paths = tuple(
             [f"file:///{os.path.join(CURRENT_DIR, 'jars', name)}" for name in jar_files]
         )
-        print(jar_paths)
         logging.info(f"adding local jars - {', '.join(jar_files)}")
-        env.add_jars(*jar_paths) 
+        env.add_jars(*jar_paths)
     
 
     skyone_source = (
