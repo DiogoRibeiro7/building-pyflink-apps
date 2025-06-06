@@ -6,14 +6,14 @@ import json
 from datetime import datetime, timedelta
 from typing import Dict, Any
 
-from pyflink.common import Types, Row, OutputTag
+from pyflink.common import Types, Row
 from pyflink.datastream import (
     StreamExecutionEnvironment,
     RuntimeExecutionMode,
     ProcessFunction,
-    ProcessFunctionContext,
-    WatermarkStrategy,
+    OutputTag,
 )
+from pyflink.common import WatermarkStrategy
 
 from pyflink.datastream.connectors.kafka import KafkaSource, KafkaOffsetsInitializer
 
@@ -85,7 +85,7 @@ class DelayRouter(ProcessFunction):
     def process_element(
         self,
         value: Row,
-        ctx: ProcessFunctionContext,
+        ctx: ProcessFunction.Context,
         out: 'Collector[Row]'
     ) -> None:
         """
@@ -104,7 +104,6 @@ class DelayRouter(ProcessFunction):
         else:
             # Emit to the regular output
             out.collect(raw_json)
-
 
 def main() -> None:
     """
